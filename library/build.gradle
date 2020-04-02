@@ -65,7 +65,7 @@ artifacts {
 
 publishing {
     publications {
-        bar(MavenPublication) {
+        androidsimpletooltip(MavenPublication) {
             version version
             artifact(sourcesJar)
             artifact("$buildDir/outputs/aar/library-release.aar")
