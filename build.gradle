@@ -35,6 +35,6 @@ task clean(type: Delete) {
 }
 
 subprojects {
-    group = "in.porter.douglasjunior:android-simple-tooltip"
-    version = "0.2.3.0"
+    group = "in.porter.douglasjunior.android-simple-tooltip"
+    version = "0.2.3"
 }
