@@ -27,8 +27,3 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
-subprojects {
-    group = "in.porter.douglasjunior.android-simple-tooltip"
-    version = "0.2.3"
-}
