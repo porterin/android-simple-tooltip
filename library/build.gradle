@@ -1,5 +1,9 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven-publish'
+
+group = "in.porter.douglasjunior"
+version = "0.2.3.0"
 
 android {
     compileSdkVersion 28
@@ -9,7 +13,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 9
-        versionName "0.2.3"
+        versionName version
     }
     buildTypes {
         release {
@@ -58,4 +62,22 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 artifacts {
     archives sourcesJar
     archives javadocJar
+}
+
+publishing {
+    publications {
+        androidsimpletooltip(MavenPublication) {
+            version version
+            artifact(sourcesJar)
+            artifact("$buildDir/outputs/aar/library-release.aar")
+        }
+    }
+    repositories {
+        maven {
+            url "s3://porter-maven/releases"
+            authentication {
+                awsIm(AwsImAuthentication)
+            }
+        }
+    }
 }
