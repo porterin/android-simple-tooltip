@@ -131,6 +131,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
     private int xOffSetPopUp, yOffSetPopUp;
     private boolean isAnimationDisplayed;
     private int arrowGravityBasedMargin = (int) (-SimpleTooltipUtils.pxFromDp(1f)) - 2;
+    private boolean isAnchorViewAttached = false;
 
 
     private SimpleTooltip(Builder builder) {
@@ -176,7 +177,28 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         configPopupWindow();
         configContentView();
         handleAnchorViewTouch();
+        handleAnchorViewRemovedCase();
     }
+
+    private void handleAnchorViewRemovedCase() {
+        mAnchorView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() { isAnchorViewAttached = true; }
+                }, 500);
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                if(isAnchorViewAttached)
+                    dismiss();
+            }
+        });
+
+    }
+
 
     private void configPopupWindow() {
         mPopupWindow = new PopupWindow(mContext, null, mDefaultPopupWindowStyleRes);
@@ -456,18 +478,10 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
     };
 
     private void updatePopUpLocation() {
-        if (isAnchorViewRemoved()) {
-            dismiss();
-            return;
-        }
         PointF location = calculePopupLocation();
         mPopupWindow.setClippingEnabled(true);
         mPopupWindow.update((int) location.x + xOffSetPopUp, (int) location.y + yOffSetPopUp, mPopupWindow.getWidth(), mPopupWindow.getHeight());
         mPopupWindow.getContentView().requestLayout();
-    }
-
-    private boolean isAnchorViewRemoved() {
-        return mRootView.findViewById(mAnchorView.getId()) == null;
     }
 
     private final ViewTreeObserver.OnGlobalLayoutListener mArrowLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
