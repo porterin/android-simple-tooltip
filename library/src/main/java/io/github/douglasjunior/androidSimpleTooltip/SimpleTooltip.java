@@ -177,10 +177,10 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         configPopupWindow();
         configContentView();
         handleAnchorViewTouch();
-        handleAnchorViewRemovedCase();
+        handleAnchorViewRemoved();
     }
 
-    private void handleAnchorViewRemovedCase() {
+    private void handleAnchorViewRemoved() {
         mAnchorView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
@@ -192,8 +192,9 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                if(isAnchorViewAttached)
+                if(isAnchorViewAttached){
                     dismiss();
+                }
             }
         });
 
