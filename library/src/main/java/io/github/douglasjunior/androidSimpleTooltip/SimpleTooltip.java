@@ -86,6 +86,9 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
     private static final int mDefaultArrowWidthRes = R.dimen.simpletooltip_arrow_width;
     private static final int mDefaultArrowHeightRes = R.dimen.simpletooltip_arrow_height;
     private static final int mDefaultOverlayOffsetRes = R.dimen.simpletooltip_overlay_offset;
+    private static final int delayForAnchorAttachStateChangeListener = 500;
+    private static final int delayForUpdatingPopUpLocation = 300;
+    private static final int delayForUpdatingArrowLocation = 100;
 
     private final Context mContext;
     private OnDismissListener mOnDismissListener;
@@ -176,7 +179,30 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         configPopupWindow();
         configContentView();
         handleAnchorViewTouch();
+        handleAnchorViewRemoved();
     }
+
+    private void handleAnchorViewRemoved() {
+        final boolean[] isAnchorViewAttached = {false};
+        mAnchorView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() { isAnchorViewAttached[0] = true; }
+                }, delayForAnchorAttachStateChangeListener);
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                if(isAnchorViewAttached[0]){
+                    dismiss();
+                }
+            }
+        });
+
+    }
+
 
     private void configPopupWindow() {
         mPopupWindow = new PopupWindow(mContext, null, mDefaultPopupWindowStyleRes);
@@ -456,18 +482,10 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
     };
 
     private void updatePopUpLocation() {
-        if (isAnchorViewRemoved()) {
-            dismiss();
-            return;
-        }
         PointF location = calculePopupLocation();
         mPopupWindow.setClippingEnabled(true);
         mPopupWindow.update((int) location.x + xOffSetPopUp, (int) location.y + yOffSetPopUp, mPopupWindow.getWidth(), mPopupWindow.getHeight());
         mPopupWindow.getContentView().requestLayout();
-    }
-
-    private boolean isAnchorViewRemoved() {
-        return mRootView.findViewById(mAnchorView.getId()) == null;
     }
 
     private final ViewTreeObserver.OnGlobalLayoutListener mArrowLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -553,9 +571,9 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
                     public void run() {
                         if (mShowArrow) updateArrowLocation();
                     }
-                }, 100);
+                }, delayForUpdatingArrowLocation);
             }
-        }, 300);
+        }, delayForUpdatingPopUpLocation);
     }
 
     private final ViewTreeObserver.OnGlobalLayoutListener mAnimationLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {

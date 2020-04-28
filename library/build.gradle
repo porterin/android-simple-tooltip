@@ -3,7 +3,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'maven-publish'
 
 group = "in.porter.douglasjunior"
-version = "0.2.3.0"
+version = "0.2.3.1"
 
 android {
     compileSdkVersion 28
