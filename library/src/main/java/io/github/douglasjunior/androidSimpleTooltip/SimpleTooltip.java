@@ -33,6 +33,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -134,6 +135,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
     private int xOffSetPopUp, yOffSetPopUp;
     private boolean isAnimationDisplayed;
     private int arrowGravityBasedMargin = (int) (-SimpleTooltipUtils.pxFromDp(1f)) - 2;
+    private Typeface defaultTypeface;
 
 
     private SimpleTooltip(Builder builder) {
@@ -172,6 +174,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         this.height = builder.height;
         this.xOffSetPopUp = builder.xOffSetPopUp;
         this.yOffSetPopUp = builder.yOffSetPopUp;
+        this.defaultTypeface = builder.defaultTypeface;
         init();
     }
 
@@ -309,6 +312,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         if (mContentView instanceof TextView) {
             TextView tv = (TextView) mContentView;
             tv.setBackground(mTextBackground);
+            tv.setTypeface(defaultTypeface);
             tv.setTextSize(SimpleTooltipUtils.getDimen(mContext, mDefaultTextSize));
             tv.setTextColor(SimpleTooltipUtils.getColor(mContext, mDefaultTextColorRes));
             tv.setText(mText);
@@ -382,8 +386,10 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         mAnchorView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                mAnchorView.performClick();
-                if (popUpActionListener != null) popUpActionListener.onPopUpClicked();
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    mAnchorView.performClick();
+                    if (popUpActionListener != null) popUpActionListener.onPopUpClicked();
+                }
                 return true;
             }
         });
@@ -685,6 +691,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         private int overlayWindowBackgroundColor = 0;
         private Drawable textBackground = null;
         private int xOffSetPopUp, yOffSetPopUp;
+        private Typeface defaultTypeface;
 
         public Builder(Context context) {
             this.context = context;
@@ -746,6 +753,10 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
             }
             if (textBackground == null) {
                 textBackground = SimpleTooltipUtils.getDrawable(context, mDefaultTextBackGround);
+            }
+
+            if(defaultTypeface == null){
+                defaultTypeface = Typeface.createFromAsset(context.getAssets(), "fonts/Lato-Regular.ttf");
             }
             return new SimpleTooltip(this);
         }
@@ -1235,6 +1246,11 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
 
         public Builder yOffSetPopUp(int yOffSetPopUp) {
             this.yOffSetPopUp = yOffSetPopUp;
+            return this;
+        }
+
+        public Builder defaultTypeface(Typeface typeface){
+            this.defaultTypeface = typeface;
             return this;
         }
     }
