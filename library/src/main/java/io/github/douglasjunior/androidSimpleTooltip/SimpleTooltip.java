@@ -386,11 +386,10 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         mAnchorView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    mAnchorView.performClick();
-                    if (popUpActionListener != null) popUpActionListener.onPopUpClicked();
+                if (event.getAction() == MotionEvent.ACTION_UP && popUpActionListener != null){
+                    popUpActionListener.onPopUpClicked();
                 }
-                return true;
+                return false;
             }
         });
     }
