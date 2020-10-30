@@ -107,6 +107,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
     private final int mOverlayWindowBackgroundColor;
     private final CharSequence mText;
     private final View mAnchorView;
+    private final View popUpRecyclerView;
     private final boolean mTransparentOverlay;
     private final float mOverlayOffset;
     private final boolean mOverlayMatchParent;
@@ -150,6 +151,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         mTextViewId = builder.textViewId;
         mText = builder.text;
         mAnchorView = builder.anchorView;
+        popUpRecyclerView = builder.popUpRecyclerView;
         mTransparentOverlay = builder.transparentOverlay;
         mOverlayOffset = builder.overlayOffset;
         mOverlayMatchParent = builder.overlayMatchParent;
@@ -186,26 +188,23 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
     }
 
     private void handleAnchorViewRemoved() {
-        final boolean[] isAnchorViewAttached = {false};
-        mAnchorView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+        View.OnAttachStateChangeListener listener = getOnAttachStateChangeListener();
+        if (popUpRecyclerView != null) popUpRecyclerView.addOnAttachStateChangeListener(listener);
+        else mAnchorView.addOnAttachStateChangeListener(listener);
+    }
+
+    private View.OnAttachStateChangeListener getOnAttachStateChangeListener() {
+        return new View.OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() { isAnchorViewAttached[0] = true; }
-                }, delayForAnchorAttachStateChangeListener);
             }
 
             @Override
             public void onViewDetachedFromWindow(View v) {
-                if(isAnchorViewAttached[0]){
-                    dismiss();
-                }
+                dismiss();
             }
-        });
-
+        };
     }
-
 
     private void configPopupWindow() {
         mPopupWindow = new PopupWindow(mContext, null, mDefaultPopupWindowStyleRes);
@@ -661,6 +660,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         private int textViewId = android.R.id.text1;
         private CharSequence text = "";
         private View anchorView;
+        private View popUpRecyclerView = null;
         private int arrowDirection = ArrowDrawable.AUTO;
         private int gravity = Gravity.BOTTOM;
         private boolean transparentOverlay = true;
@@ -914,6 +914,11 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
          */
         public Builder anchorView(View anchorView) {
             this.anchorView = anchorView;
+            return this;
+        }
+
+        public Builder popUpRecyclerView(View popUpRecyclerview) {
+            this.popUpRecyclerView = popUpRecyclerview;
             return this;
         }
 
