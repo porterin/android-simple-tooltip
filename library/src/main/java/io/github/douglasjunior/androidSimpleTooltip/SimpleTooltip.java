@@ -486,6 +486,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
     };
 
     private void updatePopUpLocation() {
+        if(mPopupWindow == null) return;
         PointF location = calculePopupLocation();
         mPopupWindow.setClippingEnabled(true);
         mPopupWindow.update((int) location.x + xOffSetPopUp, (int) location.y + yOffSetPopUp, mPopupWindow.getWidth(), mPopupWindow.getHeight());
@@ -507,6 +508,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
     };
 
     private void updateArrowLocation() {
+        if(mPopupWindow == null) return;
         RectF achorRect = SimpleTooltipUtils.calculeRectOnScreen(mAnchorView);
         RectF contentViewRect = SimpleTooltipUtils.calculeRectOnScreen(mContentLayout);
         float x, y;
