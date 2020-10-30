@@ -57,6 +57,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import androidx.recyclerview.widget.RecyclerView;
 
 
 /**
@@ -87,7 +88,6 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
     private static final int mDefaultArrowWidthRes = R.dimen.simpletooltip_arrow_width;
     private static final int mDefaultArrowHeightRes = R.dimen.simpletooltip_arrow_height;
     private static final int mDefaultOverlayOffsetRes = R.dimen.simpletooltip_overlay_offset;
-    private static final int delayForAnchorAttachStateChangeListener = 500;
     private static final int delayForUpdatingPopUpLocation = 300;
     private static final int delayForUpdatingArrowLocation = 100;
 
@@ -107,7 +107,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
     private final int mOverlayWindowBackgroundColor;
     private final CharSequence mText;
     private final View mAnchorView;
-    private final View popUpRecyclerView;
+    private final RecyclerView recyclerViewContainingAnchorView;
     private final boolean mTransparentOverlay;
     private final float mOverlayOffset;
     private final boolean mOverlayMatchParent;
@@ -151,7 +151,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         mTextViewId = builder.textViewId;
         mText = builder.text;
         mAnchorView = builder.anchorView;
-        popUpRecyclerView = builder.popUpRecyclerView;
+        recyclerViewContainingAnchorView = builder.recyclerViewContainingAnchorView;
         mTransparentOverlay = builder.transparentOverlay;
         mOverlayOffset = builder.overlayOffset;
         mOverlayMatchParent = builder.overlayMatchParent;
@@ -189,7 +189,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
 
     private void handleAnchorViewRemoved() {
         View.OnAttachStateChangeListener listener = getOnAttachStateChangeListener();
-        if (popUpRecyclerView != null) popUpRecyclerView.addOnAttachStateChangeListener(listener);
+        if (recyclerViewContainingAnchorView != null) recyclerViewContainingAnchorView.addOnAttachStateChangeListener(listener);
         else mAnchorView.addOnAttachStateChangeListener(listener);
     }
 
@@ -662,7 +662,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         private int textViewId = android.R.id.text1;
         private CharSequence text = "";
         private View anchorView;
-        private View popUpRecyclerView = null;
+        private RecyclerView recyclerViewContainingAnchorView = null;
         private int arrowDirection = ArrowDrawable.AUTO;
         private int gravity = Gravity.BOTTOM;
         private boolean transparentOverlay = true;
@@ -919,8 +919,8 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
             return this;
         }
 
-        public Builder popUpRecyclerView(View popUpRecyclerview) {
-            this.popUpRecyclerView = popUpRecyclerview;
+        public Builder recyclerViewContainingAnchorView(RecyclerView recyclerView) {
+            this.recyclerViewContainingAnchorView = recyclerView;
             return this;
         }
 
