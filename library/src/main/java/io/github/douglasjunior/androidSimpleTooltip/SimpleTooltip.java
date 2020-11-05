@@ -57,7 +57,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import androidx.recyclerview.widget.RecyclerView;
 
 
 /**
@@ -107,7 +106,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
     private final int mOverlayWindowBackgroundColor;
     private final CharSequence mText;
     private final View mAnchorView;
-    private final RecyclerView recyclerViewContainingAnchorView;
+    private final View recyclerViewContainingAnchorView;
     private final boolean mTransparentOverlay;
     private final float mOverlayOffset;
     private final boolean mOverlayMatchParent;
@@ -662,7 +661,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
         private int textViewId = android.R.id.text1;
         private CharSequence text = "";
         private View anchorView;
-        private RecyclerView recyclerViewContainingAnchorView = null;
+        private View recyclerViewContainingAnchorView = null;
         private int arrowDirection = ArrowDrawable.AUTO;
         private int gravity = Gravity.BOTTOM;
         private boolean transparentOverlay = true;
@@ -919,7 +918,7 @@ public class SimpleTooltip implements PopupWindow.OnDismissListener {
             return this;
         }
 
-        public Builder recyclerViewContainingAnchorView(RecyclerView recyclerView) {
+        public Builder recyclerViewContainingAnchorView(View recyclerView) {
             this.recyclerViewContainingAnchorView = recyclerView;
             return this;
         }
